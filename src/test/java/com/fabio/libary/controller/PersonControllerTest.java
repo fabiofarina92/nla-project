@@ -6,6 +6,7 @@ import com.fabio.libary.model.person.OnLoanSearchCriteria;
 import com.fabio.libary.model.person.Person;
 import com.fabio.libary.service.BookService;
 import com.fabio.libary.service.PersonService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static sun.plugin2.util.PojoUtil.toJson;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(PersonController.class)
@@ -50,6 +50,7 @@ public class PersonControllerTest {
 
     @Test
     public void testOneBookOnLoanApiCall() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
         List<Book> bookList = new ArrayList<>();
         bookList.add(new Book("1", "Test Book", "Test Author", "1234", 1));
         when(bookService.getBooksOnLoanForPerson("1")).thenReturn(bookList);
@@ -63,7 +64,7 @@ public class PersonControllerTest {
 
         mvc.perform(post("/api/findOnLoan")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(successOnLoanSearchCriteria))
+                .content(mapper.writeValueAsString(successOnLoanSearchCriteria))
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(String.format("User has %d book(s) on loan", bookList.size())));
@@ -71,6 +72,7 @@ public class PersonControllerTest {
 
     @Test
     public void testNoBooksOnLoanApiCall() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
         List<Book> bookList = new ArrayList<>();
         when(bookService.getBooksOnLoanForPerson("1")).thenReturn(bookList);
 
@@ -83,7 +85,7 @@ public class PersonControllerTest {
 
         mvc.perform(post("/api/findOnLoan")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(successOnLoanSearchCriteria))
+                .content(mapper.writeValueAsString(successOnLoanSearchCriteria))
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("User has no books on loan at the moment"));

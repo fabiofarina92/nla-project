@@ -6,6 +6,7 @@ import com.fabio.libary.model.book.PersonLoanedSearchCriteria;
 import com.fabio.libary.model.person.Person;
 import com.fabio.libary.service.BookService;
 import com.fabio.libary.service.PersonService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static sun.plugin2.util.PojoUtil.toJson;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(BookController.class)
@@ -50,6 +50,7 @@ public class BookControllerTest {
     @Test
     public void testBookOnLoanApiCall() throws Exception {
 
+        ObjectMapper mapper = new ObjectMapper();
         Person person = new Person("1", "Test Person", "0412 3456 7890", "test@email.com");
         when(personService.getPersonById("1")).thenReturn(person);
 
@@ -63,7 +64,8 @@ public class BookControllerTest {
 
         mvc.perform(post("/api/findPersonLoaned")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(successPersonSearchCriteria))).andExpect(content().json(toJson(ajaxPersonResponse)));
+                .content(mapper.writeValueAsString(successPersonSearchCriteria)))
+                .andExpect(content().json(mapper.writeValueAsString(ajaxPersonResponse)));
 
 
     }
@@ -71,6 +73,7 @@ public class BookControllerTest {
     @Test
     public void testBookAvailableApiCall() throws Exception {
 
+        ObjectMapper mapper = new ObjectMapper();
         when(personService.getPersonById(null)).thenThrow(EmptyResultDataAccessException.class);
 
 
@@ -84,7 +87,8 @@ public class BookControllerTest {
         PersonLoanedSearchCriteria failPersonSearchCriteria = new PersonLoanedSearchCriteria();
         mvc.perform(post("/api/findPersonLoaned")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(failPersonSearchCriteria ))).andExpect(content().json(toJson(ajaxPersonResponse)));
+                .content(mapper.writeValueAsString(successPersonSearchCriteria)))
+                .andExpect(content().json(mapper.writeValueAsString(ajaxPersonResponse)));
 
     }
 }
