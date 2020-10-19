@@ -15,9 +15,7 @@
     <description>Demo of library application</description>
 
     <properties>
-        <java.version>11</java.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>8</java.version>
     </properties>
 
     <dependencies>
@@ -85,17 +83,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.3.0.M2</version>
-            </plugin>
         </plugins>
     </build>
-    <!--    <repositories>-->
-    <!--        <repository>-->
-    <!--            <id>mvnrepository</id>-->
-    <!--            <url>https://mvnrepository.com/repos/central</url>-->
-    <!--        </repository>-->
-    <!--    </repositories>-->
 </project>
